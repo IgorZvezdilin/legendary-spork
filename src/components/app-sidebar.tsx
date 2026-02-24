@@ -115,23 +115,23 @@ export function AppSidebar() {
                               className="flex min-w-0 justify-center text-center"
                               onClick={(event) => {
                                 localStorage.setItem("home_section", item);
-                              if (pathname === "/") {
-                                event.preventDefault();
-                                requestAnimationFrame(() => {
-                                  const target = document.getElementById(item);
-                                  if (target) {
-                                    target.scrollIntoView({ behavior: "smooth", block: "start" });
-                                  }
-                                });
-                              } else {
-                                router.push("/");
-                              }
-                              if (isMobile) {
-                                setOpenMobile(false);
-                              }
-                            }}
-                          >
-                              <span className="flex w-full items-center justify-center text-sm font-semibold">
+                                if (pathname === "/") {
+                                  event.preventDefault();
+                                  requestAnimationFrame(() => {
+                                    const target = document.getElementById(item);
+                                    if (target) {
+                                      target.scrollIntoView({ behavior: "smooth", block: "start" });
+                                    }
+                                  });
+                                } else {
+                                  router.push("/");
+                                }
+                                if (isMobile) {
+                                  setOpenMobile(false);
+                                }
+                              }}
+                            >
+                              <span className="flex items-center pl-1 text-sm font-semibold">
                                 {index + 1}
                               </span>
 
@@ -150,22 +150,22 @@ export function AppSidebar() {
                           className="min-w-0"
                           onClick={(event) => {
                             localStorage.setItem("home_section", item);
-                              if (pathname === "/") {
-                                event.preventDefault();
-                                requestAnimationFrame(() => {
-                                  const target = document.getElementById(item);
-                                  if (target) {
-                                    target.scrollIntoView({ behavior: "smooth", block: "start" });
-                                  }
-                                });
-                              } else {
-                                router.push("/");
-                              }
-                              if (isMobile) {
-                                setOpenMobile(false);
-                              }
-                            }}
-                          >
+                            if (pathname === "/") {
+                              event.preventDefault();
+                              requestAnimationFrame(() => {
+                                const target = document.getElementById(item);
+                                if (target) {
+                                  target.scrollIntoView({ behavior: "smooth", block: "start" });
+                                }
+                              });
+                            } else {
+                              router.push("/");
+                            }
+                            if (isMobile) {
+                              setOpenMobile(false);
+                            }
+                          }}
+                        >
                           <span className="text-sm font-semibold">{index + 1}</span>
                           <TruncatedTooltip text={companyNewsBySection[item].topic} />
                         </Link>

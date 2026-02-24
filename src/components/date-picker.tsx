@@ -95,7 +95,7 @@ export function SidebarDatePicker({ collapsed }: { collapsed?: boolean }) {
         <Button
           variant={collapsed ? "ghost" : "outline"}
           id="sidebar-date"
-          className={collapsed ? "justify-center" : "h-9 w-full justify-between"}
+          className={collapsed ? "justify-start p-0! pl-1.5!" : "h-9 w-full justify-between"}
         >
           {collapsed ? (
             <CalendarIcon className="h-2 w-2" />
