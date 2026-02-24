@@ -13,6 +13,8 @@ import {
   Trees,
   Icon,
   Download,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 import {
@@ -25,11 +27,13 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { companyNewsBySection } from "./constants";
-import { ForwardRefExoticComponent, RefAttributes } from "react";
+import { ForwardRefExoticComponent, RefAttributes, useRef, useState } from "react";
 import Link from "next/link";
-import { Button } from "./ui/button";
+import { usePathname, useRouter } from "next/navigation";
 import { downloadSectionsAsCSV } from "@/lib/utils";
+import { SidebarDatePicker } from "@/components/date-picker";
 
 const topicIcons: Record<
   keyof typeof companyNewsBySection,
@@ -46,8 +50,35 @@ const topicIcons: Record<
   investments_finance: DollarSign, // finance / investments
 };
 
+function TruncatedTooltip({ text }: { text: string }) {
+  const ref = useRef<HTMLSpanElement | null>(null);
+  const [isTruncated, setIsTruncated] = useState(false);
+
+  const checkTruncate = () => {
+    if (!ref.current) return;
+    setIsTruncated(ref.current.scrollWidth > ref.current.clientWidth);
+  };
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <span ref={ref} className="truncate" onMouseEnter={checkTruncate} onFocus={checkTruncate}>
+          {text}
+        </span>
+      </TooltipTrigger>
+      {isTruncated ? (
+        <TooltipContent side="right" align="center">
+          {text}
+        </TooltipContent>
+      ) : null}
+    </Tooltip>
+  );
+}
+
 export function AppSidebar() {
-  const { state } = useSidebar();
+  const { state, toggleSidebar, isMobile, setOpenMobile } = useSidebar();
+  const router = useRouter();
+  const pathname = usePathname();
 
   return (
     <Sidebar collapsible="icon">
@@ -67,20 +98,79 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent className="pt-4">
         <SidebarGroup>
+          <SidebarDatePicker collapsed={state === "collapsed"} />
+        </SidebarGroup>
+        <SidebarGroup>
           <SidebarMenu className="flex flex-col gap-3">
             {(Object.keys(companyNewsBySection) as (keyof typeof companyNewsBySection)[]).map(
               (item, index) => {
-                const Icon = topicIcons[item];
                 return (
                   <SidebarMenuItem key={index}>
-                    <SidebarMenuButton asChild className="text-base text-white">
-                      <Link href={item}>
-                        <div className="flex size-4 items-center justify-center">
-                          <Icon size={32} />
-                        </div>
-                        <span>{companyNewsBySection[item].topic}</span>
-                      </Link>
-                    </SidebarMenuButton>
+                    {state === "collapsed" ? (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <SidebarMenuButton asChild className="text-sidebar-foreground text-base">
+                            <Link
+                              href="/"
+                              className="flex min-w-0 justify-center text-center"
+                              onClick={(event) => {
+                                localStorage.setItem("home_section", item);
+                              if (pathname === "/") {
+                                event.preventDefault();
+                                requestAnimationFrame(() => {
+                                  const target = document.getElementById(item);
+                                  if (target) {
+                                    target.scrollIntoView({ behavior: "smooth", block: "start" });
+                                  }
+                                });
+                              } else {
+                                router.push("/");
+                              }
+                              if (isMobile) {
+                                setOpenMobile(false);
+                              }
+                            }}
+                          >
+                              <span className="flex w-full items-center justify-center text-sm font-semibold">
+                                {index + 1}
+                              </span>
+
+                              <span className="truncate">{companyNewsBySection[item].topic}</span>
+                            </Link>
+                          </SidebarMenuButton>
+                        </TooltipTrigger>
+                        <TooltipContent side="right" align="center">
+                          {companyNewsBySection[item].topic}
+                        </TooltipContent>
+                      </Tooltip>
+                    ) : (
+                      <SidebarMenuButton asChild className="text-sidebar-foreground text-base">
+                        <Link
+                          href="/"
+                          className="min-w-0"
+                          onClick={(event) => {
+                            localStorage.setItem("home_section", item);
+                              if (pathname === "/") {
+                                event.preventDefault();
+                                requestAnimationFrame(() => {
+                                  const target = document.getElementById(item);
+                                  if (target) {
+                                    target.scrollIntoView({ behavior: "smooth", block: "start" });
+                                  }
+                                });
+                              } else {
+                                router.push("/");
+                              }
+                              if (isMobile) {
+                                setOpenMobile(false);
+                              }
+                            }}
+                          >
+                          <span className="text-sm font-semibold">{index + 1}</span>
+                          <TruncatedTooltip text={companyNewsBySection[item].topic} />
+                        </Link>
+                      </SidebarMenuButton>
+                    )}
                   </SidebarMenuItem>
                 );
               }
@@ -90,15 +180,64 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarMenu className="pt-4">
             <SidebarMenuItem>
-              <SidebarMenuButton
-                className="text-base text-white"
-                onClick={() => downloadSectionsAsCSV(companyNewsBySection)}
-              >
-                <div className="flex size-4 items-center justify-center">
-                  <Download size={32} />
-                </div>
-                <span>Скачать</span>
-              </SidebarMenuButton>
+              {state === "collapsed" ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <SidebarMenuButton
+                      className="text-sidebar-foreground text-base"
+                      onClick={() => downloadSectionsAsCSV(companyNewsBySection)}
+                    >
+                      <div className="flex size-4 items-center justify-center">
+                        <Download size={32} />
+                      </div>
+                      <span className="truncate">Скачать</span>
+                    </SidebarMenuButton>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" align="center">
+                    Скачать
+                  </TooltipContent>
+                </Tooltip>
+              ) : (
+                <SidebarMenuButton
+                  className="text-sidebar-foreground text-base"
+                  onClick={() => downloadSectionsAsCSV(companyNewsBySection)}
+                >
+                  <div className="flex size-4 items-center justify-center">
+                    <Download size={32} />
+                  </div>
+                  <TruncatedTooltip text="Скачать" />
+                </SidebarMenuButton>
+              )}
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              {state === "collapsed" ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <SidebarMenuButton
+                      className="text-sidebar-foreground text-base"
+                      onClick={toggleSidebar}
+                    >
+                      <div className="flex size-4 items-center justify-center">
+                        <ChevronRight size={20} />
+                      </div>
+                      <span className="truncate">Показать меню</span>
+                    </SidebarMenuButton>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" align="center">
+                    Показать меню
+                  </TooltipContent>
+                </Tooltip>
+              ) : (
+                <SidebarMenuButton
+                  className="text-sidebar-foreground text-base"
+                  onClick={toggleSidebar}
+                >
+                  <div className="flex size-4 items-center justify-center">
+                    <ChevronLeft size={20} />
+                  </div>
+                  <TruncatedTooltip text="Скрыть меню" />
+                </SidebarMenuButton>
+              )}
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>

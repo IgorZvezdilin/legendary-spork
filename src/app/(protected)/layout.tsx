@@ -1,18 +1,18 @@
-import { AppSidebar } from "@/components/app-sidebar";
+import { ProtectedAppSidebar } from "@/components/app-sidebar-protected";
 import { AuthGuard } from "@/components/auth-guard";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppProvider } from "@/contexts/filter.context";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
   return (
-    <AuthGuard publicPaths={["/"]} allowSingleSegment>
-      <SidebarProvider>
-        <AppProvider>
-          <AppSidebar />
-          <main className="flex min-h-screen flex-1 flex-col p-5">
-            <div className="from-background/90 sticky top-0 z-10 flex h-12 items-center justify-between bg-linear-to-b to-transparent pt-2 pb-2">
-              <SidebarTrigger className="hidden max-[768px]:inline-flex" />
+    <SidebarProvider>
+      <AppProvider>
+        <ProtectedAppSidebar />
+        <AuthGuard>
+          <main className="flex min-h-screen flex-1 flex-col gap-6 p-5">
+            <div className="from-background/90 sticky top-0 z-10 flex h-9 items-center justify-between bg-gradient-to-b to-transparent backdrop-blur">
+              <SidebarTrigger className="hidden max-[767px]:inline-flex" />
               <ThemeToggle />
             </div>
             {children}
@@ -44,8 +44,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </a>
             </footer>
           </main>
-        </AppProvider>
-      </SidebarProvider>
-    </AuthGuard>
+        </AuthGuard>
+      </AppProvider>
+    </SidebarProvider>
   );
 }

@@ -69,12 +69,12 @@ export const ClampText = ({
       {/* Visible text */}
       {isExpanded || !clampedText ? (
         <p
-          className={`m-0 text-[14px] leading-5 break-words whitespace-pre-wrap text-white ${className}`}
+          className={`m-0 text-[14px] leading-5 break-words whitespace-pre-wrap text-foreground ${className}`}
         >
           {text}{" "}
           {clampedText && (
             <span
-              className="cursor-pointer font-medium text-[#b0b0b0] underline select-none"
+              className="text-muted-foreground cursor-pointer font-medium underline select-none"
               onClick={() => setIsExpanded(false)}
             >
               {lessLabel}
@@ -83,11 +83,11 @@ export const ClampText = ({
         </p>
       ) : (
         <p
-          className={`m-0 text-[14px] leading-5 break-words whitespace-pre-wrap text-white ${className}`}
+          className={`m-0 text-[14px] leading-5 break-words whitespace-pre-wrap text-foreground ${className}`}
         >
           {clampedText}{" "}
           <span
-            className="cursor-pointer font-medium text-[#b0b0b0] underline select-none"
+            className="text-muted-foreground cursor-pointer font-medium underline select-none"
             onClick={() => setIsExpanded(true)}
           >
             {moreLabel}

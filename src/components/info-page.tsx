@@ -6,21 +6,29 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "./ui/
 import { useEffect, useState } from "react";
 import { EmptyInfo } from "./empty-info";
 import { useAppContext } from "@/contexts/filter.context";
+import { useMemo } from "react";
 
 export const InfoPageComponent = () => {
   const { slug }: { slug: keyof typeof companyNewsBySection } = useParams();
   const { date } = useAppContext();
+
+  const filterDate = useMemo(() => {
+    if (!date) return null;
+    const [year, month, day] = date.split("-");
+    if (!year || !month || !day) return null;
+    return `${day}.${month}.${year}`;
+  }, [date]);
   const [data, setData] = useState(companyNewsBySection[slug]);
   const [newses, setNewses] = useState(companyNewsBySection[slug].newses);
 
   useEffect(() => {
-    if (date) {
-      const filteredNewses = newses.filter((item) => item.date === date);
+    if (filterDate) {
+      const filteredNewses = newses.filter((item) => item.date === filterDate);
       setNewses(filteredNewses);
     } else {
       setNewses(companyNewsBySection[slug].newses);
     }
-  }, [date]);
+  }, [filterDate]);
 
   return (
     <div className="flex w-full flex-1 flex-col items-center justify-center gap-16 font-sans">
@@ -35,20 +43,20 @@ export const InfoPageComponent = () => {
           newses.map((news, index) => (
             <Card key={index}>
               <CardHeader>
-                <CardTitle className="text-white">{news.title}</CardTitle>
+                <CardTitle className="text-foreground">{news.title}</CardTitle>
                 <CardDescription>
                   <p className="leading-7 not-first:mt-6">{news.date}</p>
                   <div className="flex gap-2">
                     <p>Источник:</p>
-                    <p className="text-white"> {news.source}</p>
+                    <p className="text-foreground"> {news.source}</p>
                   </div>
                   <div className="flex gap-2">
                     <p>Упоминания</p>
-                    <p className="text-white">{news.branches.join(", ")}</p>
+                    <p className="text-foreground">{news.branches.join(", ")}</p>
                   </div>
                   <div className="flex gap-2">
                     <p>Автор</p>
-                    <p className="text-white">{news.author}</p>
+                    <p className="text-foreground">{news.author}</p>
                   </div>
                 </CardDescription>
               </CardHeader>

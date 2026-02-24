@@ -6,7 +6,7 @@ export const companyNewsBySection = {
       {
         id: "economy-1",
         title: "Инвестиции в солнечные панели",
-        date: "20.10.2025",
+        date: "24.02.2026",
         source: 'Газета "Хохлома"',
         branches: ["SolarFuture", "GreenHome"],
         author: "Иван Петров",
@@ -15,7 +15,7 @@ export const companyNewsBySection = {
       {
         id: "economy-2",
         title: "Модернизация перерабатывающих заводов",
-        date: "20.10.2025",
+        date: "24.02.2026",
         source: 'Бизнес Журнал "Северная Звезда"',
         branches: ["RecyclePro"],
         author: "Мария Кузнецова",
@@ -24,7 +24,7 @@ export const companyNewsBySection = {
       {
         id: "economy-3",
         title: "Умные системы управления энергопотреблением",
-        date: "20.10.2025",
+        date: "24.02.2026",
         source: 'Интернет-портал "ЭкоФинанс"',
         branches: ["UrbanSmart"],
         author: "Алексей Смирнов",
@@ -67,7 +67,7 @@ export const companyNewsBySection = {
       {
         id: "regulation-1",
         title: "Субсидии для производителей солнечных панелей",
-        date: "20.10.2025",
+        date: "24.02.2026",
         source: 'Газета "ФедералПресс"',
         branches: ["SolarFuture"],
         author: "Ольга Иванова",
@@ -76,7 +76,7 @@ export const companyNewsBySection = {
       {
         id: "regulation-2",
         title: "Новые стандарты энергоэффективности",
-        date: "20.10.2025",
+        date: "24.02.2026",
         source: 'Информационный портал "ЭнергоРегул"',
         branches: ["GreenHome", "UrbanSmart"],
         author: "Дмитрий Орлов",
@@ -85,7 +85,7 @@ export const companyNewsBySection = {
       {
         id: "regulation-3",
         title: "Пилотный проект по утилизации отходов",
-        date: "20.10.2025",
+        date: "24.02.2026",
         source: 'Журнал "Экология и бизнес"',
         branches: ["RecyclePro"],
         author: "Екатерина Лебедева",
@@ -128,7 +128,7 @@ export const companyNewsBySection = {
       {
         id: "key_messages-1",
         title: "Лидерство EcoTech Group в области экологичных технологий",
-        date: "20.10.2025",
+        date: "24.02.2026",
         source: 'Новостной портал "TechEco"',
         branches: ["SolarFuture", "GreenHome", "RecyclePro"],
         author: "Сергей Васильев",
@@ -137,7 +137,7 @@ export const companyNewsBySection = {
       {
         id: "key_messages-2",
         title: "Новая платформа UrbanSmart",
-        date: "20.10.2025",
+        date: "24.02.2026",
         source: 'Газета "Инновации"',
         branches: ["UrbanSmart"],
         author: "Алена Морозова",
@@ -146,7 +146,7 @@ export const companyNewsBySection = {
       {
         id: "key_messages-3",
         title: "Кампания GreenHome по популяризации энергоэффективных домов",
-        date: "20.10.2025",
+        date: "24.02.2026",
         source: 'Онлайн-журнал "ЭкоТренд"',
         branches: ["GreenHome"],
         author: "Никита Фролов",
@@ -189,7 +189,7 @@ export const companyNewsBySection = {
       {
         id: "competitors-1",
         title: "Снижение цен SunPower",
-        date: "20.10.2025",
+        date: "24.02.2026",
         source: 'Бизнес портал "MarketWatch"',
         branches: ["SolarFuture"],
         author: "Владимир Соколов",
@@ -198,7 +198,7 @@ export const companyNewsBySection = {
       {
         id: "competitors-2",
         title: "Открытие нового завода EcoCycle",
-        date: "20.10.2025",
+        date: "24.02.2026",
         source: 'Журнал "ЭнергоБизнес"',
         branches: ["RecyclePro"],
         author: "Елена Петрова",
@@ -207,7 +207,7 @@ export const companyNewsBySection = {
       {
         id: "competitors-3",
         title: "Запуск SmartLiving",
-        date: "20.10.2025",
+        date: "24.02.2026",
         source: 'Интернет-портал "GreenNews"',
         branches: ["GreenHome", "UrbanSmart"],
         author: "Александр Климов",
@@ -223,7 +223,7 @@ export const companyNewsBySection = {
       {
         id: "technology-1",
         title: "Новые солнечные панели SolarFuture",
-        date: "20.10.2025",
+        date: "24.02.2026",
         source: 'Журнал "TechReview"',
         branches: ["SolarFuture"],
         author: "Марина Белова",
@@ -232,7 +232,7 @@ export const companyNewsBySection = {
       {
         id: "technology-2",
         title: "Интеллектуальные системы UrbanSmart",
-        date: "20.10.2025",
+        date: "24.02.2026",
         source: 'Интернет-портал "SmartCity"',
         branches: ["UrbanSmart"],
         author: "Дмитрий Захаров",
@@ -241,7 +241,7 @@ export const companyNewsBySection = {
       {
         id: "technology-3",
         title: "Роботизация сортировки отходов RecyclePro",
-        date: "20.10.2025",
+        date: "24.02.2026",
         source: 'Блог "EcoInnovation"',
         branches: ["RecyclePro"],
         author: "Ирина Ларина",
@@ -284,7 +284,7 @@ export const companyNewsBySection = {
       {
         id: "commercial_real_estate-1",
         title: "Офисные центры GreenHome",
-        date: "20.10.2025",
+        date: "24.02.2026",
         source: 'Журнал "PropertyNews"',
         branches: ["GreenHome"],
         author: "Олег Миронов",
@@ -293,7 +293,7 @@ export const companyNewsBySection = {
       {
         id: "commercial_real_estate-2",
         title: "Модернизация коммерческих зданий UrbanSmart",
-        date: "20.10.2025",
+        date: "24.02.2026",
         source: 'Газета "Бизнес Недвижимость"',
         branches: ["UrbanSmart"],
         author: "Татьяна Соколова",
@@ -302,7 +302,7 @@ export const companyNewsBySection = {
       {
         id: "commercial_real_estate-3",
         title: "Солнечные панели на крыши торговых центров",
-        date: "20.10.2025",
+        date: "24.02.2026",
         source: 'Интернет-портал "EcoProperty"',
         branches: ["SolarFuture"],
         author: "Николай Федоров",
@@ -318,7 +318,7 @@ export const companyNewsBySection = {
       {
         id: "e_commerce-1",
         title: "Онлайн-магазин GreenHome",
-        date: "20.10.2025",
+        date: "24.02.2026",
         source: 'Портал "EcomNews"',
         branches: ["GreenHome"],
         author: "Лариса Воронова",
@@ -327,7 +327,7 @@ export const companyNewsBySection = {
       {
         id: "e_commerce-2",
         title: "Онлайн-платформа RecyclePro",
-        date: "20.10.2025",
+        date: "24.02.2026",
         source: 'Журнал "DigitalBusiness"',
         branches: ["RecyclePro"],
         author: "Андрей Морозов",
@@ -336,7 +336,7 @@ export const companyNewsBySection = {
       {
         id: "e_commerce-3",
         title: "Онлайн-продажа солнечных панелей SolarFuture",
-        date: "20.10.2025",
+        date: "24.02.2026",
         source: 'Интернет-портал "TechRetail"',
         branches: ["SolarFuture"],
         author: "Светлана Кузьмина",
@@ -379,7 +379,7 @@ export const companyNewsBySection = {
       {
         id: "social_responsibility-1",
         title: "Сбор пластиковых отходов RecyclePro",
-        date: "20.10.2025",
+        date: "24.02.2026",
         source: 'Журнал "ЭкоМир"',
         branches: ["RecyclePro"],
         author: "Алина Васильева",
@@ -388,7 +388,7 @@ export const companyNewsBySection = {
       {
         id: "social_responsibility-2",
         title: "Образовательные программы GreenHome и UrbanSmart",
-        date: "20.10.2025",
+        date: "24.02.2026",
         source: 'Интернет-портал "GreenLife"',
         branches: ["GreenHome", "UrbanSmart"],
         author: "Виктор Козлов",
@@ -397,7 +397,7 @@ export const companyNewsBySection = {
       {
         id: "social_responsibility-3",
         title: "Солнечные панели в детских домах SolarFuture",
-        date: "20.10.2025",
+        date: "24.02.2026",
         source: 'Газета "ЭкоНовости"',
         branches: ["SolarFuture"],
         author: "Екатерина Морозова",
@@ -440,7 +440,7 @@ export const companyNewsBySection = {
       {
         id: "investments_finance-1",
         title: "Привлечение инвестора SolarFuture",
-        date: "20.10.2025",
+        date: "24.02.2026",
         source: 'Бизнес журнал "FinEco"',
         branches: ["SolarFuture"],
         author: "Андрей Иванов",
@@ -449,7 +449,7 @@ export const companyNewsBySection = {
       {
         id: "investments_finance-2",
         title: "Раунд инвестиций GreenHome",
-        date: "20.10.2025",
+        date: "24.02.2026",
         source: 'Портал "Investment Today"',
         branches: ["GreenHome"],
         author: "Мария Лебедева",
@@ -458,7 +458,7 @@ export const companyNewsBySection = {
       {
         id: "investments_finance-3",
         title: "Финансирование UrbanSmart и RecyclePro",
-        date: "20.10.2025",
+        date: "24.02.2026",
         source: 'Журнал "Corporate Finance"',
         branches: ["UrbanSmart", "RecyclePro"],
         author: "Сергей Николаев",
