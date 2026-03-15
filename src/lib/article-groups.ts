@@ -3,10 +3,12 @@ import { apiFetch } from "@/lib/auth";
 export type ArticleGroup = {
   id: string;
   title: string;
+  subgroup: string;
 };
 
 export type ArticleGroupInput = {
   title: string;
+  subgroup: string;
 };
 
 function withCompanyHeader(companyId: string) {

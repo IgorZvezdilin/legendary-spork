@@ -45,6 +45,9 @@ export default function CompaniesPage() {
     try {
       const created = await createCompany({ name: name.trim() });
       setCompanies((prev) => [created, ...prev]);
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem("company_name", created.name);
+      }
       setName("");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Не удалось создать компанию");

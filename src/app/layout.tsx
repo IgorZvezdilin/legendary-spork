@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: " Ежедневный обзор СМИ",
+  title: "Еженедельный дайджет",
 };
 
 export default function RootLayout({

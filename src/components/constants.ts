@@ -1,4 +1,42 @@
-export const companyNewsBySection = {
+type RawNewsItem = {
+  id: string;
+  title: string;
+  date: string;
+  source: string;
+  branches: string[];
+  author: string;
+  text: string;
+  subgroup?: string;
+  is_weekly_top?: boolean;
+};
+
+type BackendNewsItem = {
+  id: string;
+  title: string;
+  date: string;
+  subtitle: string;
+  content: string;
+  media_name: string;
+  source: { name: string; url: string }[];
+  reprints: { name: string; url: string }[];
+  is_weekly_top: boolean;
+  total_media_reach: number;
+  topic_publications_count: number;
+};
+
+type RawSection = {
+  id: string;
+  topic: string;
+  newses: RawNewsItem[];
+};
+
+type BackendSection = {
+  id: string;
+  topic: string;
+  newses: BackendNewsItem[];
+};
+
+const rawCompanyNewsBySection: Record<string, RawSection> = {
   economy: {
     id: "economy-1",
     topic: "Экономика",
@@ -9,6 +47,8 @@ export const companyNewsBySection = {
         date: "24.02.2026",
         source: 'Газета "Хохлома"',
         branches: ["SolarFuture", "GreenHome"],
+        subgroup: "SolarFuture",
+        is_weekly_top: true,
         author: "Иван Петров",
         text: "Компания EcoTech Group планирует увеличить инвестиции в солнечные панели через дочернюю SolarFuture. Эксперты прогнозируют рост дохода на 15% в следующем году. GreenHome запускает новую линию энергоэффективных умных домов, что дополнительно стимулирует экономику регионов.",
       },
@@ -18,6 +58,7 @@ export const companyNewsBySection = {
         date: "24.02.2026",
         source: 'Бизнес Журнал "Северная Звезда"',
         branches: ["RecyclePro"],
+        subgroup: "",
         author: "Мария Кузнецова",
         text: "RecyclePro объявила о масштабной модернизации перерабатывающих заводов. Это позволит снизить издержки на 20% и создать более 500 новых рабочих мест. EcoTech Group подчеркивает значимость устойчивого роста в своей корпоративной стратегии.",
       },
@@ -27,6 +68,7 @@ export const companyNewsBySection = {
         date: "24.02.2026",
         source: 'Интернет-портал "ЭкоФинанс"',
         branches: ["UrbanSmart"],
+        subgroup: "UrbanSmart",
         author: "Алексей Смирнов",
         text: "UrbanSmart внедряет умные системы управления энергопотреблением в городских районах. EcoTech Group сообщает, что внедрение технологий позволит городам экономить до 30% на коммунальных расходах и улучшить инфраструктуру.",
       },
@@ -36,6 +78,7 @@ export const companyNewsBySection = {
         date: "19.10.2025",
         source: 'Газета "Бизнес Сегодня"',
         branches: ["GreenHome"],
+        subgroup: "GreenHome",
         author: "Игорь Мельников",
         text: "GreenHome увеличивает производство энергоэффективных домов на 25% в ответ на растущий спрос. EcoTech Group отмечает положительное влияние на региональные строительные рынки. Ожидается рост занятости в строительном секторе.",
       },
@@ -45,6 +88,7 @@ export const companyNewsBySection = {
         date: "19.10.2025",
         source: 'Интернет-портал "EcoFinance"',
         branches: ["SolarFuture", "UrbanSmart"],
+        subgroup: "SolarFuture",
         author: "Евгений Попов",
         text: "SolarFuture и UrbanSmart запускают совместный проект по интеграции солнечных панелей в умные дома. EcoTech Group прогнозирует повышение общей энергоэффективности на 18% в пилотных регионах.",
       },
@@ -54,8 +98,30 @@ export const companyNewsBySection = {
         date: "19.10.2025",
         source: 'Журнал "ЭкоЭкономика"',
         branches: ["RecyclePro"],
+        subgroup: "RecyclePro",
         author: "Людмила Фомина",
         text: "RecyclePro расширяет сеть перерабатывающих пунктов в крупных городах. EcoTech Group сообщает, что это улучшит логистику переработки и сократит издержки на транспортировку отходов.",
+      },
+      {
+        id: "economy-7",
+        title: "Новый экспортный контракт EcoTech Group",
+        date: "19.10.2025",
+        source: 'Агентство "Экономика Сегодня"',
+        branches: ["EcoTech Export"],
+        subgroup: "Экспорт",
+        author: "Анна Васильева",
+        text: "EcoTech Group заключила новый экспортный контракт на поставку энергоэффективных решений в страны Восточной Европы. Компания ожидает рост выручки в международном сегменте и расширение партнерской сети.",
+      },
+      {
+        id: "economy-8",
+        title: "RecyclePro оптимизирует логистику переработки",
+        date: "19.10.2025",
+        source: 'Журнал "Бизнес и Экология"',
+        branches: ["RecyclePro"],
+        subgroup: "RecyclePro",
+        is_weekly_top: true,
+        author: "Сергей Воронов",
+        text: "RecyclePro внедрила новую схему логистики, которая ускоряет вывоз сырья и снижает издержки на транспортировку. EcoTech Group ожидает рост эффективности переработки и повышение маржинальности.",
       },
     ],
   },
@@ -70,6 +136,7 @@ export const companyNewsBySection = {
         date: "24.02.2026",
         source: 'Газета "ФедералПресс"',
         branches: ["SolarFuture"],
+        subgroup: "SolarFuture",
         author: "Ольга Иванова",
         text: "Правительство утвердило субсидии для производителей солнечных панелей, включая SolarFuture. EcoTech Group оценивает новые меры как стимул к расширению производства. Это решение поддерживает национальную программу по переходу на возобновляемые источники энергии.",
       },
@@ -79,6 +146,7 @@ export const companyNewsBySection = {
         date: "24.02.2026",
         source: 'Информационный портал "ЭнергоРегул"',
         branches: ["GreenHome", "UrbanSmart"],
+        subgroup: "GreenHome",
         author: "Дмитрий Орлов",
         text: "GreenHome и UrbanSmart подпадают под новые государственные стандарты энергоэффективности. EcoTech Group готова адаптироваться к требованиям и инвестировать в сертификацию технологий. Это укрепляет доверие потребителей и государственных органов.",
       },
@@ -88,6 +156,7 @@ export const companyNewsBySection = {
         date: "24.02.2026",
         source: 'Журнал "Экология и бизнес"',
         branches: ["RecyclePro"],
+        subgroup: "RecyclePro",
         author: "Екатерина Лебедева",
         text: "RecyclePro входит в пилотный проект правительства по утилизации промышленных отходов. EcoTech Group активно сотрудничает с государственными органами для повышения стандартов переработки. Новые правила позволяют создавать прозрачную цепочку утилизации и сокращать вредное воздействие на окружающую среду.",
       },
@@ -97,6 +166,7 @@ export const companyNewsBySection = {
         date: "19.10.2025",
         source: 'Газета "Право и Бизнес"',
         branches: ["GreenHome"],
+        subgroup: "GreenHome",
         author: "Виктория Сидорова",
         text: "GreenHome внедряет новые стандарты энергоэффективности в соответствии с законодательством. EcoTech Group акцентирует внимание на соблюдении всех нормативов и экологических требований. Это повышает доверие клиентов к компании.",
       },
@@ -106,6 +176,7 @@ export const companyNewsBySection = {
         date: "19.10.2025",
         source: 'Интернет-портал "EnergyReg"',
         branches: ["SolarFuture", "UrbanSmart"],
+        subgroup: "SolarFuture",
         author: "Сергей Крылов",
         text: "SolarFuture и UrbanSmart участвуют в государственной программе поддержки возобновляемых источников энергии. EcoTech Group отмечает, что субсидии ускорят внедрение технологий в регионах с высокой нагрузкой на энергосети.",
       },
@@ -115,6 +186,7 @@ export const companyNewsBySection = {
         date: "19.10.2025",
         source: 'Журнал "Экология и Закон"',
         branches: ["RecyclePro"],
+        subgroup: "RecyclePro",
         author: "Наталья Громова",
         text: "RecyclePro соблюдает новые правила сортировки и переработки отходов, введенные государственными органами. EcoTech Group сообщает о повышении прозрачности процессов и улучшении экологической отчетности.",
       },
@@ -131,6 +203,7 @@ export const companyNewsBySection = {
         date: "24.02.2026",
         source: 'Новостной портал "TechEco"',
         branches: ["SolarFuture", "GreenHome", "RecyclePro"],
+        subgroup: "SolarFuture",
         author: "Сергей Васильев",
         text: "EcoTech Group была названа лидером в области экологичных технологий в отчете 'Лучшие компании года'. SolarFuture получила награду за инновации в солнечной энергетике, GreenHome — за умные дома, а RecyclePro — за устойчивую переработку. Компания отмечает рост интереса инвесторов и партнеров.",
       },
@@ -140,6 +213,7 @@ export const companyNewsBySection = {
         date: "24.02.2026",
         source: 'Газета "Инновации"',
         branches: ["UrbanSmart"],
+        subgroup: "UrbanSmart",
         author: "Алена Морозова",
         text: "UrbanSmart представила новую платформу для умного управления городскими энергоресурсами. EcoTech Group подчеркивает, что проект направлен на повышение качества городской среды. Партнеры компании высоко оценили инновационные решения и потенциал масштабирования.",
       },
@@ -149,6 +223,7 @@ export const companyNewsBySection = {
         date: "24.02.2026",
         source: 'Онлайн-журнал "ЭкоТренд"',
         branches: ["GreenHome"],
+        subgroup: "GreenHome",
         author: "Никита Фролов",
         text: "GreenHome запускает кампанию по популяризации энергоэффективных домов среди населения. EcoTech Group акцентирует внимание на устойчивом образе жизни и снижении углеродного следа. Социальные сети компании активно распространяют образовательные материалы о зеленых технологиях.",
       },
@@ -158,6 +233,7 @@ export const companyNewsBySection = {
         date: "19.10.2025",
         source: 'Портал "TechEco Today"',
         branches: ["GreenHome", "SolarFuture"],
+        subgroup: "GreenHome",
         author: "Алексей Новиков",
         text: "EcoTech Group объявила о награждении дочерних компаний за инновации и устойчивое развитие. GreenHome получила приз за энергоэффективные дома, а SolarFuture — за солнечные панели нового поколения. Это подтверждает лидерство компании в отрасли.",
       },
@@ -167,6 +243,7 @@ export const companyNewsBySection = {
         date: "19.10.2025",
         source: 'Газета "Инновации"',
         branches: ["UrbanSmart"],
+        subgroup: "UrbanSmart",
         author: "Марина Соколова",
         text: "UrbanSmart запустила новый сервис умного управления городскими энергосистемами. EcoTech Group подчеркивает, что платформа позволяет экономить до 20% энергии в пилотных районах. Партнеры компании отметили высокий технологический уровень решения.",
       },
@@ -176,6 +253,7 @@ export const companyNewsBySection = {
         date: "19.10.2025",
         source: 'Онлайн-журнал "EcoTrend"',
         branches: ["RecyclePro"],
+        subgroup: "RecyclePro",
         author: "Иван Лебедев",
         text: "RecyclePro внедрила инновационные линии по переработке отходов. EcoTech Group отмечает, что новые технологии повышают эффективность и сокращают углеродный след. Новости активно распространяются в социальных сетях компании.",
       },
@@ -192,6 +270,7 @@ export const companyNewsBySection = {
         date: "24.02.2026",
         source: 'Бизнес портал "MarketWatch"',
         branches: ["SolarFuture"],
+        subgroup: "SolarFuture",
         author: "Владимир Соколов",
         text: "Главный конкурент SolarFuture, компания SunPower, объявила о снижении цен на свои солнечные панели. EcoTech Group прокомментировала, что сосредоточится на инновациях и качестве продукции, чтобы удерживать лидирующие позиции на рынке.",
       },
@@ -201,6 +280,7 @@ export const companyNewsBySection = {
         date: "24.02.2026",
         source: 'Журнал "ЭнергоБизнес"',
         branches: ["RecyclePro"],
+        subgroup: "RecyclePro",
         author: "Елена Петрова",
         text: "Основной конкурент RecyclePro, компания EcoCycle, открыла новый завод по переработке пластиковых отходов. EcoTech Group отмечает, что модернизация производств и внедрение новых технологий остаются ключевыми факторами успеха.",
       },
@@ -210,6 +290,7 @@ export const companyNewsBySection = {
         date: "24.02.2026",
         source: 'Интернет-портал "GreenNews"',
         branches: ["GreenHome", "UrbanSmart"],
+        subgroup: "GreenHome",
         author: "Александр Климов",
         text: "Компания SmartLiving, конкурирующая с GreenHome и UrbanSmart, запустила линейку умных домов и систем управления энергопотреблением. EcoTech Group видит в этом возможность для партнерства и обмена опытом в сфере энергоэффективных решений.",
       },
@@ -226,6 +307,7 @@ export const companyNewsBySection = {
         date: "24.02.2026",
         source: 'Журнал "TechReview"',
         branches: ["SolarFuture"],
+        subgroup: "SolarFuture",
         author: "Марина Белова",
         text: "SolarFuture внедряет новые солнечные панели с повышенной эффективностью. EcoTech Group отмечает, что инновации позволят увеличить выработку энергии и снизить стоимость эксплуатации для клиентов.",
       },
@@ -235,6 +317,7 @@ export const companyNewsBySection = {
         date: "24.02.2026",
         source: 'Интернет-портал "SmartCity"',
         branches: ["UrbanSmart"],
+        subgroup: "UrbanSmart",
         author: "Дмитрий Захаров",
         text: "UrbanSmart тестирует интеллектуальные системы управления городской энергосетью с использованием IoT и AI. EcoTech Group считает, что такие технологии позволят существенно оптимизировать расходы и улучшить экологическую обстановку в городах.",
       },
@@ -244,6 +327,7 @@ export const companyNewsBySection = {
         date: "24.02.2026",
         source: 'Блог "EcoInnovation"',
         branches: ["RecyclePro"],
+        subgroup: "RecyclePro",
         author: "Ирина Ларина",
         text: "RecyclePro разрабатывает роботизированные линии для сортировки отходов. EcoTech Group подчеркивает, что автоматизация повышает эффективность переработки и снижает негативное воздействие на окружающую среду.",
       },
@@ -253,6 +337,7 @@ export const companyNewsBySection = {
         date: "19.10.2025",
         source: 'Блог "TechInnovation"',
         branches: ["SolarFuture"],
+        subgroup: "SolarFuture",
         author: "Ольга Дмитриева",
         text: "SolarFuture тестирует солнечные панели нового поколения с повышенной энергоэффективностью. EcoTech Group заявляет, что это позволит снизить стоимость производства и ускорить переход на чистую энергию.",
       },
@@ -262,6 +347,7 @@ export const companyNewsBySection = {
         date: "19.10.2025",
         source: 'Портал "SmartCity Tech"',
         branches: ["UrbanSmart"],
+        subgroup: "UrbanSmart",
         author: "Константин Федоров",
         text: "UrbanSmart внедряет новые алгоритмы управления городской энергосетью с использованием AI и IoT. EcoTech Group отмечает, что это улучшает баланс энергопотребления и повышает устойчивость городской инфраструктуры.",
       },
@@ -271,6 +357,7 @@ export const companyNewsBySection = {
         date: "19.10.2025",
         source: 'Журнал "EcoTech Review"',
         branches: ["RecyclePro"],
+        subgroup: "RecyclePro",
         author: "Екатерина Иванова",
         text: "RecyclePro разрабатывает автоматизированные линии по сортировке отходов с использованием роботов. EcoTech Group подчеркивает, что это повышает эффективность переработки и снижает экологические риски.",
       },
@@ -287,6 +374,7 @@ export const companyNewsBySection = {
         date: "24.02.2026",
         source: 'Журнал "PropertyNews"',
         branches: ["GreenHome"],
+        subgroup: "GreenHome",
         author: "Олег Миронов",
         text: "GreenHome открывает новые офисные центры с энергоэффективными системами управления. EcoTech Group отмечает, что внедрение зеленых технологий повышает стоимость объектов и привлекает устойчивых арендаторов.",
       },
@@ -296,6 +384,7 @@ export const companyNewsBySection = {
         date: "24.02.2026",
         source: 'Газета "Бизнес Недвижимость"',
         branches: ["UrbanSmart"],
+        subgroup: "UrbanSmart",
         author: "Татьяна Соколова",
         text: "UrbanSmart участвует в проекте по модернизации городских коммерческих зданий с умными системами энергопотребления. EcoTech Group сообщает, что новые технологии позволят снизить эксплуатационные расходы и улучшить экосистему зданий.",
       },
@@ -305,6 +394,7 @@ export const companyNewsBySection = {
         date: "24.02.2026",
         source: 'Интернет-портал "EcoProperty"',
         branches: ["SolarFuture"],
+        subgroup: "SolarFuture",
         author: "Николай Федоров",
         text: "SolarFuture устанавливает солнечные панели на крыши торговых и офисных центров. EcoTech Group отмечает, что это не только снижает расходы на электроэнергию, но и повышает привлекательность объектов для арендаторов.",
       },
@@ -321,6 +411,7 @@ export const companyNewsBySection = {
         date: "24.02.2026",
         source: 'Портал "EcomNews"',
         branches: ["GreenHome"],
+        subgroup: "GreenHome",
         author: "Лариса Воронова",
         text: "GreenHome запускает онлайн-магазин энергоэффективных решений для дома. EcoTech Group подчеркивает удобство покупки и доставки, что повышает доступность технологий для широкой аудитории.",
       },
@@ -330,6 +421,7 @@ export const companyNewsBySection = {
         date: "24.02.2026",
         source: 'Журнал "DigitalBusiness"',
         branches: ["RecyclePro"],
+        subgroup: "RecyclePro",
         author: "Андрей Морозов",
         text: "RecyclePro внедряет онлайн-платформу для заказа переработки отходов от корпоративных клиентов. EcoTech Group отмечает рост интереса бизнеса к удобным цифровым решениям и экологичным услугам.",
       },
@@ -339,6 +431,7 @@ export const companyNewsBySection = {
         date: "24.02.2026",
         source: 'Интернет-портал "TechRetail"',
         branches: ["SolarFuture"],
+        subgroup: "SolarFuture",
         author: "Светлана Кузьмина",
         text: "SolarFuture запускает онлайн-продажу солнечных панелей и комплектующих. EcoTech Group подчеркивает, что это расширяет клиентскую базу и упрощает процесс приобретения экологичных технологий.",
       },
@@ -348,6 +441,7 @@ export const companyNewsBySection = {
         date: "19.10.2025",
         source: 'Журнал "DigitalBusiness"',
         branches: ["GreenHome"],
+        subgroup: "GreenHome",
         author: "Александра Морозова",
         text: "GreenHome расширяет онлайн-продажи энергоэффективных решений. EcoTech Group отмечает рост интереса к удобным цифровым сервисам. Продажи через интернет-платформу увеличились на 30% в сравнении с прошлым месяцем.",
       },
@@ -357,6 +451,7 @@ export const companyNewsBySection = {
         date: "19.10.2025",
         source: 'Портал "EcomNews"',
         branches: ["RecyclePro"],
+        subgroup: "RecyclePro",
         author: "Иван Кузьмин",
         text: "RecyclePro запускает онлайн-платформу для корпоративных заказов на переработку отходов. EcoTech Group сообщает о росте интереса бизнеса к цифровым решениям и экологическим услугам. Сервис уже доступен в нескольких крупных городах.",
       },
@@ -366,6 +461,7 @@ export const companyNewsBySection = {
         date: "19.10.2025",
         source: 'Портал "TechRetail"',
         branches: ["SolarFuture"],
+        subgroup: "SolarFuture",
         author: "Светлана Ларина",
         text: "SolarFuture открывает онлайн-магазин по продаже солнечных панелей и комплектующих. EcoTech Group акцентирует внимание на удобстве покупки и доставке. Платформа позволяет расширить клиентскую базу и упрощает процесс приобретения технологий.",
       },
@@ -382,6 +478,7 @@ export const companyNewsBySection = {
         date: "24.02.2026",
         source: 'Журнал "ЭкоМир"',
         branches: ["RecyclePro"],
+        subgroup: "RecyclePro",
         author: "Алина Васильева",
         text: "RecyclePro запускает кампанию по сбору пластиковых отходов в городах. EcoTech Group подчеркивает важность вовлечения жителей и корпоративных партнеров в экологические инициативы. Проект направлен на снижение загрязнения и повышение экологической культуры населения.",
       },
@@ -391,6 +488,7 @@ export const companyNewsBySection = {
         date: "24.02.2026",
         source: 'Интернет-портал "GreenLife"',
         branches: ["GreenHome", "UrbanSmart"],
+        subgroup: "GreenHome",
         author: "Виктор Козлов",
         text: "GreenHome и UrbanSmart организуют образовательные программы по энергоэффективности для школьников и студентов. EcoTech Group отмечает, что такие инициативы помогают формировать новое поколение сознательных потребителей энергии. Программы уже стартовали в нескольких регионах страны.",
       },
@@ -400,6 +498,7 @@ export const companyNewsBySection = {
         date: "24.02.2026",
         source: 'Газета "ЭкоНовости"',
         branches: ["SolarFuture"],
+        subgroup: "SolarFuture",
         author: "Екатерина Морозова",
         text: "SolarFuture финансирует установку солнечных панелей в детских домах и социальных центрах. EcoTech Group акцентирует внимание на социальной значимости проектов. Это помогает обеспечивать бесплатное энергоснабжение для благотворительных учреждений.",
       },
@@ -409,6 +508,7 @@ export const companyNewsBySection = {
         date: "19.10.2025",
         source: 'Газета "ЭкоНовости"',
         branches: ["RecyclePro"],
+        subgroup: "RecyclePro",
         author: "Алина Кузьмина",
         text: "RecyclePro провела акцию по сбору и переработке пластика в школах города. EcoTech Group отмечает активное участие учеников и педагогов. Проект направлен на повышение экологической культуры.",
       },
@@ -418,6 +518,7 @@ export const companyNewsBySection = {
         date: "19.10.2025",
         source: 'Интернет-портал "GreenLife"',
         branches: ["GreenHome", "UrbanSmart"],
+        subgroup: "GreenHome",
         author: "Виктор Козлов",
         text: "GreenHome и UrbanSmart открывают бесплатные мастер-классы для студентов по энергоэффективности. EcoTech Group подчеркивает значимость образовательных инициатив для будущих специалистов. Мероприятия проходят в нескольких крупных городах.",
       },
@@ -427,6 +528,7 @@ export const companyNewsBySection = {
         date: "19.10.2025",
         source: 'Журнал "ЭкоМир"',
         branches: ["SolarFuture"],
+        subgroup: "",
         author: "Екатерина Морозова",
         text: "SolarFuture финансирует установку солнечных панелей в домах для многодетных семей. EcoTech Group отмечает социальную значимость инициативы. Это позволяет улучшить энергоснабжение и снизить расходы на электричество для семей.",
       },
@@ -443,6 +545,7 @@ export const companyNewsBySection = {
         date: "24.02.2026",
         source: 'Бизнес журнал "FinEco"',
         branches: ["SolarFuture"],
+        subgroup: "SolarFuture",
         author: "Андрей Иванов",
         text: "SolarFuture привлекла стратегического инвестора для расширения производства солнечных панелей. EcoTech Group планирует увеличить объемы инвестиций в новые проекты и технологические исследования. Сделка позволит ускорить внедрение инноваций на рынок.",
       },
@@ -452,6 +555,7 @@ export const companyNewsBySection = {
         date: "24.02.2026",
         source: 'Портал "Investment Today"',
         branches: ["GreenHome"],
+        subgroup: "GreenHome",
         author: "Мария Лебедева",
         text: "GreenHome завершила раунд привлечения инвестиций для расширения сети умных домов. EcoTech Group оценивает сделку как значимый шаг для ускорения цифровизации жилой недвижимости. Привлеченные средства пойдут на разработку новых энергоэффективных решений.",
       },
@@ -461,6 +565,7 @@ export const companyNewsBySection = {
         date: "24.02.2026",
         source: 'Журнал "Corporate Finance"',
         branches: ["UrbanSmart", "RecyclePro"],
+        subgroup: "UrbanSmart",
         author: "Сергей Николаев",
         text: "UrbanSmart и RecyclePro получили финансирование от международного экологического фонда для масштабирования проектов умных городов и переработки отходов. EcoTech Group отмечает рост доверия инвесторов к устойчивым проектам. Это позволит расширить географию реализации инициатив.",
       },
@@ -470,6 +575,7 @@ export const companyNewsBySection = {
         date: "19.10.2025",
         source: 'Бизнес журнал "FinEco"',
         branches: ["GreenHome", "SolarFuture"],
+        subgroup: "GreenHome",
         author: "Ольга Петрова",
         text: "EcoTech Group объявила о стратегическом слиянии GreenHome и SolarFuture для оптимизации инвестиционного портфеля. Это позволит усилить позиции на рынке умных домов и солнечных технологий, а также привлечь дополнительных инвесторов.",
       },
@@ -479,6 +585,7 @@ export const companyNewsBySection = {
         date: "19.10.2025",
         source: 'Портал "Investment Today"',
         branches: ["RecyclePro"],
+        subgroup: "RecyclePro",
         author: "Ирина Смирнова",
         text: "RecyclePro привлекла капитал для расширения перерабатывающих мощностей. EcoTech Group подчеркивает, что инвестиции позволят увеличить эффективность переработки и снизить издержки. Новые линии запустят в нескольких крупных городах.",
       },
@@ -488,9 +595,52 @@ export const companyNewsBySection = {
         date: "19.10.2025",
         source: 'Журнал "Corporate Finance"',
         branches: ["SolarFuture"],
+        subgroup: "SolarFuture",
         author: "Алексей Попов",
         text: "SolarFuture получает финансирование для разработки новых моделей солнечных панелей. EcoTech Group отмечает рост интереса инвесторов к устойчивым технологиям. Это позволит ускорить внедрение инновационных решений на рынок.",
       },
     ],
   },
 };
+
+const dateFormatter = new Intl.DateTimeFormat("ru-RU", {
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+});
+
+const today = new Date();
+const yesterday = new Date(today);
+yesterday.setDate(today.getDate() - 1);
+const tomorrow = new Date(today);
+tomorrow.setDate(today.getDate() + 1);
+const rollingDates = [
+  dateFormatter.format(yesterday),
+  dateFormatter.format(today),
+  dateFormatter.format(tomorrow),
+];
+
+export const companyNewsBySection: Record<string, BackendSection> = Object.fromEntries(
+  Object.entries(rawCompanyNewsBySection).map(([key, section]) => [
+    key,
+    {
+      ...section,
+      newses: section.newses.map((news, index) => ({
+        id: news.id,
+        title: news.title,
+        date: rollingDates[index % rollingDates.length],
+        subtitle: news.subgroup ?? news.branches?.[0] ?? news.title,
+        content: news.text,
+        media_name: news.source,
+        source: news.source ? [{ name: news.source, url: "https://example.com" }] : [],
+        reprints: news.branches.map((branch) => ({
+          name: branch,
+          url: "https://example.com",
+        })),
+        is_weekly_top: news.is_weekly_top ?? false,
+        total_media_reach: 15_123_000_000,
+        topic_publications_count: 15_123_000_000,
+      })),
+    },
+  ])
+) as Record<string, BackendSection>;

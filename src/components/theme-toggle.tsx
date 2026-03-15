@@ -13,7 +13,7 @@ export function ThemeToggle() {
     <Button
       type="button"
       variant="outline"
-      size="icon"
+      size="icon-sm"
       aria-label="Переключить тему"
       onClick={() => setTheme(isDark ? "light" : "dark")}
     >

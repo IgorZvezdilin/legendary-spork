@@ -5,15 +5,24 @@ export type Article = {
   title: string;
   subtitle: string;
   content: string;
-  author: string;
-  links: string[];
+  media_name: string;
+  source: { name: string; url: string }[];
+  reprints: { name: string; url: string }[];
+  is_weekly_top: boolean;
+  total_media_reach: number;
+  topic_publications_count: number;
 };
 
 export type ArticleInput = {
   title: string;
-  subtitle?: string;
   content: string;
-  author?: string;
+  subtitle?: string;
+  media_name: string;
+  source: { name: string; url: string }[];
+  reprints: { name: string; url: string }[];
+  is_weekly_top: boolean;
+  total_media_reach: number;
+  topic_publications_count: number;
 };
 
 function withCompanyHeader(companyId: string) {

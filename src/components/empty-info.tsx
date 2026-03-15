@@ -14,8 +14,10 @@ export function EmptyInfo() {
         <EmptyMedia variant="icon">
           <Newspaper />
         </EmptyMedia>
-        <EmptyTitle>По указанной дате новостей не обнаружено</EmptyTitle>
-        <EmptyDescription>Пожалуйста, выберите другую дату</EmptyDescription>
+        <EmptyTitle>Новостей не обнаружено</EmptyTitle>
+        <EmptyDescription>
+          Попробуйте выбрать другую дату, отчистить фильтры или строку поиска
+        </EmptyDescription>
       </EmptyHeader>
     </Empty>
   );

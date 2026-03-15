@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import * as Dialog from "@radix-ui/react-dialog";
-import { MoreHorizontal, Pencil } from "lucide-react";
+import { MoreHorizontal, Pencil, Star } from "lucide-react";
 import {
   createReport,
   deleteReport,
@@ -21,7 +21,7 @@ import {
   updateArticleGroup,
   type ArticleGroup,
 } from "@/lib/article-groups";
-import { deleteArticle, listArticles, type Article } from "@/lib/articles";
+import { deleteArticle, listArticles, updateArticle, type Article } from "@/lib/articles";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { DatePicker } from "@/components/date-picker";
@@ -39,13 +39,13 @@ export default function NewsPage() {
   const [companyId, setCompanyId] = useState("");
   const [news, setNews] = useState<ReportItem[]>([]);
   const [form, setForm] = useState<ReportInput>({
-    date: new Date().toISOString().slice(0, 10),
+    date_start: new Date().toISOString().slice(0, 10),
+    date_end: new Date().toISOString().slice(0, 10),
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingReport, setEditingReport] = useState<ReportItem | null>(null);
-  const [editingDate, setEditingDate] = useState("");
   const [groupModalReportId, setGroupModalReportId] = useState<string | null>(null);
   const [groupTitle, setGroupTitle] = useState("");
   const [editingGroupId, setEditingGroupId] = useState<string | null>(null);
@@ -57,7 +57,7 @@ export default function NewsPage() {
   const [articlesByGroup, setArticlesByGroup] = useState<Record<string, Article[]>>({});
   const [loadingArticles, setLoadingArticles] = useState<Record<string, boolean>>({});
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const { date: dateContext, setDate: setDateContext } = useAppContext();
+  const { dateRange, setDateRange } = useAppContext();
   const router = useRouter();
 
   useEffect(() => {
@@ -82,7 +82,11 @@ export default function NewsPage() {
   useEffect(() => {
     if (!companyId) return;
     let isMounted = true;
-    listReports(companyId)
+    listReports(companyId, {
+      date: dateRange?.from || form.date_start,
+      date_from: dateRange?.from,
+      date_to: dateRange?.to,
+    })
       .then((data) => {
         if (isMounted) setNews(data);
       })
@@ -94,19 +98,22 @@ export default function NewsPage() {
     return () => {
       isMounted = false;
     };
-  }, [companyId]);
+  }, [companyId, dateRange, form.date_start, form.date_end]);
 
   useEffect(() => {
-    if (!dateContext) return;
+    if (!dateRange?.from) return;
     if (editingReport) {
-      setEditingDate(dateContext);
-    } else {
-      setForm((prev) => ({ ...prev, date: dateContext }));
+      return;
     }
-  }, [dateContext, editingReport]);
+    setForm((prev) => ({
+      ...prev,
+      date_start: dateRange.from ?? prev.date_start,
+      date_end: dateRange.to ?? dateRange.from ?? prev.date_end,
+    }));
+  }, [dateRange, editingReport]);
 
   useEffect(() => {
-    setDateContext(form.date);
+    setDateRange({ from: form.date_start, to: form.date_end });
   }, []);
 
   const selectedCompany = useMemo(
@@ -117,15 +124,21 @@ export default function NewsPage() {
   async function handleCreate(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!companyId) return;
-    if (!form.date) return;
+    const rangeStart = dateRange?.from ?? form.date_start;
+    const rangeEnd = dateRange?.to ?? form.date_end ?? rangeStart;
+    if (!rangeStart) return;
 
     setIsSubmitting(true);
     setError(null);
     try {
-      const created = await createReport(companyId, form);
+      const created = await createReport(companyId, {
+        date_start: rangeStart,
+        date_end: rangeEnd,
+      });
       setNews((prev) => [created, ...prev]);
-      setForm({ date: new Date().toISOString().slice(0, 10) });
-      setDateContext(new Date().toISOString().slice(0, 10));
+      const today = new Date().toISOString().slice(0, 10);
+      setForm({ date_start: today, date_end: today });
+      setDateRange({ from: today, to: today });
       setIsModalOpen(false);
     } catch (err) {
       if (err instanceof Error && err.message === "REPORT_DATE_CONFLICT") {
@@ -140,14 +153,16 @@ export default function NewsPage() {
 
   async function handleEditSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!companyId || !editingReport || !editingDate) return;
+    if (!companyId || !editingReport || !dateRange?.from) return;
     setIsSubmitting(true);
     setError(null);
     try {
-      const updated = await updateReport(companyId, editingReport.id, { date: editingDate });
+      const updated = await updateReport(companyId, editingReport.id, {
+        date_start: dateRange.from,
+        date_end: dateRange.to ?? dateRange.from,
+      });
       setNews((prev) => prev.map((item) => (item.id === updated.id ? updated : item)));
       setEditingReport(null);
-      setEditingDate("");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Не удалось обновить новость");
     } finally {
@@ -164,6 +179,7 @@ export default function NewsPage() {
       if (groupModalMode === "edit" && editingGroupId) {
         const updated = await updateArticleGroup(companyId, groupModalReportId, editingGroupId, {
           title: groupTitle.trim(),
+          subgroup: groupTitle.trim(),
         });
         setGroupsByReport((prev) => ({
           ...prev,
@@ -174,6 +190,7 @@ export default function NewsPage() {
       } else {
         const created = await createArticleGroup(companyId, groupModalReportId, {
           title: groupTitle.trim(),
+          subgroup: groupTitle.trim(),
         });
         setGroupsByReport((prev) => ({
           ...prev,
@@ -235,6 +252,33 @@ export default function NewsPage() {
     }
   }
 
+  async function handleToggleWeeklyTop(reportId: string, groupId: string, article: Article) {
+    if (!companyId) return;
+    setIsSubmitting(true);
+    setError(null);
+    try {
+      const updated = await updateArticle(companyId, reportId, groupId, article.id, {
+        title: article.title,
+        subtitle: article.subtitle,
+        content: article.content,
+        media_name: article.media_name,
+        source: article.source ?? [],
+        reprints: article.reprints ?? [],
+        is_weekly_top: !article.is_weekly_top,
+        total_media_reach: article.total_media_reach ?? 0,
+        topic_publications_count: article.topic_publications_count ?? 0,
+      });
+      setArticlesByGroup((prev) => ({
+        ...prev,
+        [groupId]: (prev[groupId] || []).map((item) => (item.id === updated.id ? updated : item)),
+      }));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Не удалось обновить статью");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   async function handleDeleteArticle(reportId: string, groupId: string, articleId: string) {
     if (!companyId) return;
     if (!confirm("Удалить статью? Это действие нельзя отменить.")) return;
@@ -284,7 +328,7 @@ export default function NewsPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between gap-3">
-            <span>Новости</span>
+            <span>Отчеты</span>
             <Dialog.Root open={isModalOpen} onOpenChange={setIsModalOpen}>
               <Dialog.Trigger asChild>
                 <Button type="button" variant="outline" size="icon" aria-label="Добавить новость">
@@ -295,9 +339,9 @@ export default function NewsPage() {
                 <Dialog.Overlay className="bg-foreground/40 fixed inset-0 z-40" />
                 <Dialog.Content className="border-border/60 bg-card fixed top-1/2 left-1/2 z-50 w-[95vw] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-xl border p-6 shadow-lg">
                   <div className="space-y-2">
-                    <Dialog.Title className="text-lg font-semibold">Создать новость</Dialog.Title>
+                    <Dialog.Title className="text-lg font-semibold">Создать отчет</Dialog.Title>
                     <Dialog.Description className="text-muted-foreground text-sm">
-                      Укажите дату выпуска и сохраните запись.
+                      Укажите диапазон дат и сохраните запись.
                     </Dialog.Description>
                   </div>
                   <form className="mt-4 grid gap-4" onSubmit={handleCreate}>
@@ -446,7 +490,7 @@ export default function NewsPage() {
       </Dialog.Root>
       <div className="grid gap-3">
         {news.length === 0 ? (
-          <p className="text-muted-foreground text-sm">Пока нет новостей для выбранной компании.</p>
+          <p className="text-muted-foreground text-sm">Пока нет отчетов для выбранной компании.</p>
         ) : (
           news.map((item) => (
             <Card key={item.id}>
@@ -456,7 +500,12 @@ export default function NewsPage() {
                     <span className="text-muted-foreground text-xs">
                       {item.is_published ? "Опубликовано" : "Черновик"}
                     </span>
-                    <p className="font-medium">Новость от: {item.date}</p>
+                    <p className="font-medium">
+                      Новость от: {item.date_start}
+                      {item.date_end && item.date_end !== item.date_start
+                        ? ` — ${item.date_end}`
+                        : ""}
+                    </p>
                     <p className="text-muted-foreground text-xs">ID: {item.id}</p>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -474,8 +523,10 @@ export default function NewsPage() {
                             onClick={(event) => {
                               event.preventDefault();
                               setEditingReport(item);
-                              setEditingDate(item.date);
-                              setDateContext(item.date);
+                              setDateRange({
+                                from: item.date_start,
+                                to: item.date_end || item.date_start,
+                              });
                             }}
                           >
                             Редактировать новость
@@ -533,7 +584,12 @@ export default function NewsPage() {
                               >
                                 <div className="flex items-start justify-between gap-2">
                                   <div>
-                                    <p className="text-sm font-medium">{group.title}</p>
+                                    <p className="text-sm font-medium">
+                                      {group.title}
+                                      {group.subgroup && group.subgroup !== group.title
+                                        ? ` — ${group.subgroup}`
+                                        : ""}
+                                    </p>
                                     <p className="text-muted-foreground text-xs">ID: {group.id}</p>
                                   </div>
                                   <Popover>
@@ -549,7 +605,7 @@ export default function NewsPage() {
                                           className="hover:bg-accent rounded-md px-3 py-2 text-left text-sm"
                                           onClick={() => {
                                             setGroupModalReportId(item.id);
-                                            setGroupTitle(group.title);
+                                            setGroupTitle(group.subgroup || group.title);
                                             setGroupModalMode("edit");
                                             setEditingGroupId(group.id);
                                           }}
@@ -562,8 +618,8 @@ export default function NewsPage() {
                                           onClick={() => {
                                             router.push(
                                               `/news/${item.id}/edit?companyId=${companyId}&groupId=${group.id}&groupTitle=${encodeURIComponent(
-                                                group.title
-                                              )}&reportDate=${item.date}&action=create-article`
+                                                group.subgroup || group.title
+                                              )}&reportDate=${item.date_start}&action=create-article`
                                             );
                                           }}
                                         >
@@ -612,48 +668,83 @@ export default function NewsPage() {
                                                   <p className="text-muted-foreground text-xs">
                                                     {article.subtitle}
                                                   </p>
+                                                  {article.media_name ? (
+                                                    <p className="text-muted-foreground text-xs">
+                                                      {article.media_name}
+                                                    </p>
+                                                  ) : null}
                                                 </div>
-                                                <Popover>
-                                                  <PopoverTrigger asChild>
-                                                    <Button
-                                                      variant="outline"
-                                                      size="icon"
-                                                      aria-label="Действия"
+                                                <div className="flex items-start gap-2">
+                                                  <Button
+                                                    variant="outline"
+                                                    size="icon"
+                                                    aria-label="Лучшие новости недели"
+                                                    onClick={() =>
+                                                      handleToggleWeeklyTop(
+                                                        item.id,
+                                                        group.id,
+                                                        article
+                                                      )
+                                                    }
+                                                  >
+                                                    <Star
+                                                      className={`size-4 ${
+                                                        article.is_weekly_top
+                                                          ? "text-yellow-500"
+                                                          : "text-muted-foreground"
+                                                      }`}
+                                                      fill={
+                                                        article.is_weekly_top
+                                                          ? "currentColor"
+                                                          : "none"
+                                                      }
+                                                    />
+                                                  </Button>
+                                                  <Popover>
+                                                    <PopoverTrigger asChild>
+                                                      <Button
+                                                        variant="outline"
+                                                        size="icon"
+                                                        aria-label="Действия"
+                                                      >
+                                                        <MoreHorizontal className="size-4" />
+                                                      </Button>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent
+                                                      align="end"
+                                                      className="w-48 p-2"
                                                     >
-                                                      <MoreHorizontal className="size-4" />
-                                                    </Button>
-                                                  </PopoverTrigger>
-                                                  <PopoverContent align="end" className="w-48 p-2">
-                                                    <div className="flex flex-col gap-1">
-                                                      <button
-                                                        type="button"
-                                                        className="hover:bg-accent rounded-md px-3 py-2 text-left text-sm"
-                                                        onClick={() => {
-                                                          router.push(
-                                                            `/news/${item.id}/edit?companyId=${companyId}&groupId=${group.id}&groupTitle=${encodeURIComponent(
-                                                              group.title
-                                                            )}&reportDate=${item.date}&articleId=${article.id}&action=edit-article`
-                                                          );
-                                                        }}
-                                                      >
-                                                        Редактировать
-                                                      </button>
-                                                      <button
-                                                        type="button"
-                                                        className="text-destructive hover:bg-destructive/10 rounded-md px-3 py-2 text-left text-sm"
-                                                        onClick={() =>
-                                                          handleDeleteArticle(
-                                                            item.id,
-                                                            group.id,
-                                                            article.id
-                                                          )
-                                                        }
-                                                      >
-                                                        Удалить
-                                                      </button>
-                                                    </div>
-                                                  </PopoverContent>
-                                                </Popover>
+                                                      <div className="flex flex-col gap-1">
+                                                        <button
+                                                          type="button"
+                                                          className="hover:bg-accent rounded-md px-3 py-2 text-left text-sm"
+                                                          onClick={() => {
+                                                            router.push(
+                                                              `/news/${item.id}/edit?companyId=${companyId}&groupId=${group.id}&groupTitle=${encodeURIComponent(
+                                                                group.subgroup || group.title
+                                                              )}&reportDate=${item.date_start}&articleId=${article.id}&action=edit-article`
+                                                            );
+                                                          }}
+                                                        >
+                                                          Редактировать
+                                                        </button>
+                                                        <button
+                                                          type="button"
+                                                          className="text-destructive hover:bg-destructive/10 rounded-md px-3 py-2 text-left text-sm"
+                                                          onClick={() =>
+                                                            handleDeleteArticle(
+                                                              item.id,
+                                                              group.id,
+                                                              article.id
+                                                            )
+                                                          }
+                                                        >
+                                                          Удалить
+                                                        </button>
+                                                      </div>
+                                                    </PopoverContent>
+                                                  </Popover>
+                                                </div>
                                               </div>
                                             </div>
                                           ))}

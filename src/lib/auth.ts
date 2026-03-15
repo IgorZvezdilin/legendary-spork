@@ -71,7 +71,6 @@ export async function refreshAccessToken(): Promise<string | null> {
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include",
       body: JSON.stringify({ refresh_token: refreshToken }),
     });
 
@@ -116,9 +115,7 @@ export async function apiFetch(
   const request = new Request(resolveUrl(input), init);
   const token = getAccessToken();
 
-  const firstResponse = await fetch(withAuth(request.clone(), token), {
-    credentials: "include",
-  });
+  const firstResponse = await fetch(withAuth(request.clone(), token));
 
   if (firstResponse.status !== 401) {
     return firstResponse;
@@ -129,9 +126,7 @@ export async function apiFetch(
     return firstResponse;
   }
 
-  return fetch(withAuth(request.clone(), refreshedToken), {
-    credentials: "include",
-  });
+  return fetch(withAuth(request.clone(), refreshedToken));
 }
 
 export async function loginWithEmail(email: string, password: string) {
@@ -140,7 +135,6 @@ export async function loginWithEmail(email: string, password: string) {
     headers: {
       "Content-Type": "application/json",
     },
-    credentials: "include",
     body: JSON.stringify({ email, password }),
   });
 

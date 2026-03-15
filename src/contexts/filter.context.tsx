@@ -6,11 +6,28 @@ import React, { createContext, useCallback, useContext, useMemo, useState } from
  */
 
 interface AppState {
-  date: string | undefined;
+  dateRange:
+    | {
+        from?: string;
+        to?: string;
+      }
+    | undefined;
+  weeklyTopOverrides: Record<string, boolean>;
+  searchInput: string;
+  appliedQuery: string;
+  filters: {
+    media: string[];
+    categories: string[];
+    sources: string[];
+  };
 }
 
 interface AppActions {
-  setDate: (d: string | undefined) => void;
+  setDateRange: (range: { from?: string; to?: string } | undefined) => void;
+  setWeeklyTopOverride: (id: string, value: boolean) => void;
+  setSearchInput: (value: string) => void;
+  setAppliedQuery: (value: string) => void;
+  setFilters: (filters: { media: string[]; categories: string[]; sources: string[] }) => void;
 }
 
 /**
@@ -28,20 +45,81 @@ const AppContext = createContext<AppContextValue | undefined>(undefined);
  */
 export const AppProvider: React.FC<{
   children: React.ReactNode;
-  initialDate?: string | undefined;
-}> = ({ children, initialDate = undefined }) => {
-  const [date, setDateState] = useState<string | undefined>(initialDate);
+  initialDateRange?: { from?: string; to?: string } | undefined;
+}> = ({ children, initialDateRange = undefined }) => {
+  const [dateRange, setDateRangeState] = useState<
+    { from?: string; to?: string } | undefined
+  >(initialDateRange);
+  const [weeklyTopOverrides, setWeeklyTopOverrides] = useState<Record<string, boolean>>({});
+  const [searchInput, setSearchInput] = useState("");
+  const [appliedQuery, setAppliedQuery] = useState("");
+  const [filters, setFiltersState] = useState({
+    media: [] as string[],
+    categories: [] as string[],
+    sources: [] as string[],
+  });
 
   // action wrappers (memoized)
-  const setDate = useCallback((d: string | undefined) => setDateState(d), []);
+  const setDateRange = useCallback(
+    (range: { from?: string; to?: string } | undefined) => setDateRangeState(range),
+    []
+  );
+  const setWeeklyTopOverride = useCallback((id: string, value: boolean) => {
+    setWeeklyTopOverrides((prev) => ({ ...prev, [id]: value }));
+  }, []);
+  const setFilters = useCallback(
+    (next: { media: string[]; categories: string[]; sources: string[] }) => {
+      setFiltersState(next);
+    },
+    []
+  );
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    const raw = window.localStorage.getItem("news_filters");
+    if (!raw) return;
+    try {
+      const parsed = JSON.parse(raw) as {
+        media?: string[];
+        categories?: string[];
+        sources?: string[];
+      };
+      setFiltersState({
+        media: parsed.media ?? [],
+        categories: parsed.categories ?? [],
+        sources: parsed.sources ?? [],
+      });
+    } catch {
+      // ignore invalid storage
+    }
+  }, []);
 
   // memoize value to avoid unnecessary re-renders of consumers
   const value = useMemo(
     () => ({
-      date,
-      setDate,
+      dateRange,
+      setDateRange,
+      weeklyTopOverrides,
+      setWeeklyTopOverride,
+      searchInput,
+      setSearchInput,
+      appliedQuery,
+      setAppliedQuery,
+      filters,
+      setFilters,
     }),
-    [date, setDate]
+    [
+      dateRange,
+      setDateRange,
+      weeklyTopOverrides,
+      setWeeklyTopOverride,
+      searchInput,
+      setSearchInput,
+      appliedQuery,
+      setAppliedQuery,
+      filters,
+      setFilters,
+    ]
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
